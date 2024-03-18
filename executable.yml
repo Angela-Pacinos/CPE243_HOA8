@@ -1,0 +1,27 @@
+---
+
+- hosts: all
+  become: true
+  pre_tasks:
+
+  - name: Install updates (Ubuntu)
+    apt:
+      upgrade: yes
+      update_cache: yes
+    when: ansible_distribution == "Ubuntu"
+
+- hosts: server1
+  become: true
+  tasks:
+    - name: Collect Executable PCAP
+      fetch:
+        src: /home/angela/PCAP files/sample1.pcap
+        dest: Collected_PCAP/
+        flat: yes
+
+- hosts: workstation
+  become: true
+  tasks:
+    - name: Extract Executable PCAP
+      command: "tshark -r /home/angela/CPE243_HOA8/Collected_PCAP/sample1.pcap -w /home/chrysler/CPE243_HOA8/Extracted_PCAP/extracted_sample1 -Y 'tcp'"
+
